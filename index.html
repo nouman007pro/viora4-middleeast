@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion News</title>
+</head>
+<body>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+            width: 90%;
+            max-width: 1200px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+        .card {
+            width: 250px;
+            height: 350px;
+            perspective: 1000px;
+        }
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front,
+        .card-back {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+        }
+        .card-front {
+            background-color: white;
+        }
+        .card-front img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .card-front h3 {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+        .card-front p {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #777;
+        }
+        .button, .back-btn {
+            margin-top: 10px;
+            padding: 8px 12px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .button:hover, .back-btn:hover {
+            background-color: #0056b3;
+        }
+        .card-back {
+            background-color: #007bff;
+            color: white;
+            transform: rotateY(180deg);
+        }
+        .card-back p {
+            font-size: 16px;
+            padding: 10px;
+        }
+    </style>
+    <div class="container"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const container = document.querySelector(".container");
+            
+            const newsData = [
+    { 
+        "title": "UAE Launches New Space Mission", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "The UAE announces an ambitious new space exploration project.", 
+        "details": "The United Arab Emirates has unveiled plans for its next space mission, focusing on deep-space exploration and technological advancements." 
+    },
+    { 
+        "title": "Saudi Arabia Unveils Smart City Initiative", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Saudi Arabia introduces new smart city developments.", 
+        "details": "The Saudi government has announced major progress in its Vision 2030 initiative, with a focus on AI-powered infrastructure and smart city solutions." 
+    },
+    { 
+        "title": "Qatar Strengthens Economic Ties with Europe", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Qatar signs new trade agreements with European nations.", 
+        "details": "Qatar has expanded its economic partnerships with several European countries, focusing on energy, infrastructure, and technology investments." 
+    },
+    { 
+        "title": "Egypt Launches Major Renewable Energy Project", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Egypt announces a new solar energy project.", 
+        "details": "Egypt has launched a large-scale renewable energy initiative, aiming to reduce carbon emissions and promote sustainable energy sources." 
+    },
+    { 
+        "title": "Turkey Strengthens Defense Capabilities", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Turkey unveils new defense technology advancements.", 
+        "details": "Turkey has introduced advanced military equipment and defense strategies, focusing on national security and regional stability." 
+    },
+    { 
+        "title": "Israel and UAE Expand Diplomatic Cooperation", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Israel and the UAE sign new agreements.", 
+        "details": "Following the Abraham Accords, Israel and the UAE have deepened their diplomatic and economic relations, signing agreements in various sectors." 
+    },
+    { 
+        "title": "Iran Announces New Economic Reforms", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Iran introduces changes to boost its economy.", 
+        "details": "The Iranian government has revealed a series of economic reforms aimed at stabilizing the currency and encouraging foreign investments." 
+    },
+    { 
+        "title": "Lebanon Faces Political Uncertainty", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Lebanon grapples with political challenges.", 
+        "details": "Lebanon is experiencing political instability as leaders work to form a new government amidst ongoing economic struggles." 
+    },
+    { 
+        "title": "Kuwait Expands Oil Production Efforts", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Kuwait boosts oil production amid global demand.", 
+        "details": "Kuwait is ramping up oil production to meet rising global energy demands and stabilize its economy." 
+    },
+    { 
+        "title": "Oman Promotes Tourism Growth", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Oman focuses on attracting more international tourists.", 
+        "details": "Oman has launched new initiatives to boost tourism, including visa relaxations and luxury resort developments." 
+    },
+    { 
+        "title": "Jordan Expands Water Conservation Efforts", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Jordan takes action to address water shortages.", 
+        "details": "The Jordanian government is implementing new water conservation strategies to tackle ongoing water scarcity issues in the region." 
+    },
+    { 
+        "title": "Bahrain Strengthens Digital Economy", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Bahrain invests in fintech and digital transformation.", 
+        "details": "Bahrain is expanding its digital economy by investing in fintech startups and blockchain technology solutions." 
+    },
+    { 
+        "title": "Syria Seeks Post-War Reconstruction Investments", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Syria looks for international support to rebuild.", 
+        "details": "The Syrian government is working on attracting foreign investments to assist in post-war reconstruction efforts and economic revival." 
+    },
+    { 
+        "title": "Yemen Faces Humanitarian Crisis", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Yemen continues to struggle with humanitarian challenges.", 
+        "details": "The ongoing crisis in Yemen has led to severe food shortages and health emergencies, prompting urgent international aid efforts." 
+    },
+    { 
+        "title": "Algeria Strengthens Trade Relations with Africa", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Algeria expands economic partnerships across Africa.", 
+        "details": "Algeria is focusing on increasing trade with neighboring African countries, promoting regional economic cooperation." 
+    },
+    { 
+        "title": "Morocco Develops New Tech Hub", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Morocco emerges as a leading tech innovation center.", 
+        "details": "Morocco has announced plans to establish a major technology hub to attract international companies and startups." 
+    },
+    { 
+        "title": "Tunisia Implements Economic Reforms", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Tunisia introduces policies to strengthen its economy.", 
+        "details": "The Tunisian government is implementing new economic reforms to improve business conditions and attract foreign investments." 
+    },
+    { 
+        "title": "Libya Aims for Political Stability", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Libya works toward achieving long-term peace.", 
+        "details": "Libyan leaders are engaging in negotiations to form a stable government and restore order to the country." 
+    }
+]
+
+            
+            for (let i = 0; i < 18; i++) {
+                const news = newsData[i % newsData.length];
+                const card = document.createElement("div");
+                card.classList.add("card");
+                card.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <img src="${news.image}" alt="Image ${i + 1}">
+                            <h3>${news.title}</h3>
+                            <p>${news.shortDescription}</p>
+                            <button class="button">View Details</button>
+                        </div>
+                        <div class="card-back">
+                            <p>${news.details}</p>
+                            <button class="back-btn">Back</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+                card.querySelector(".button").addEventListener("click", function() {
+                    card.classList.add("flipped");
+                });
+                card.querySelector(".back-btn").addEventListener("click", function() {
+                    card.classList.remove("flipped");
+                });
+            }
+        });
+    </script>
+</body>
+</html>
